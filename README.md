@@ -8,13 +8,13 @@ The OSX version is a recreation of the Windows version programmed in Swift 2 usi
  * Send requests to any Uri
  * View response content-body in raw-text or as formatted JSON
  * View history of past responses.
+ * View extra information about Response (content-type, size, status-code, etc.)
+ * View response content-body as Image Data
+ * Load past request information into UI
 
 # Planned Features
  * Add files to uploaded
  * Specifiy default headers
- * View extra information about Response (content-type, size, status-code, etc.)
- * View response content-body as Image Data
- * Load past request information into UI
  * Save request history and configuration to persist between application sessions.
 
 # Screenshots:
