@@ -49,8 +49,8 @@ class MainViewController: NSViewController
 	
 	@IBOutlet var ResponseCodeTextField: NSTextField!;
 	@IBOutlet var TranslationTextField: NSTextField!;
-	@IBOutlet var HResultTextField: NSTextField!;
-	@IBOutlet var ContentTypeTextField: NSTextField!;
+	@IBOutlet var EncodingTextField: NSTextField!;
+	@IBOutlet var MIMETypeTextField: NSTextField!;
 	@IBOutlet var ResponseHeadersTableView: NSTableView!;
 	
 	//---------------------------------------My Variables-------------------------------------------
@@ -125,6 +125,32 @@ class MainViewController: NSViewController
 	
 	//--------------------------------------My Functions--------------------------------------------
 	
+	func DialogOK(question: String, text: String)
+	{
+		let myPopup: NSAlert = NSAlert();
+		myPopup.messageText = question;
+		myPopup.informativeText = text;
+		myPopup.alertStyle = NSAlertStyle.WarningAlertStyle;
+		myPopup.addButtonWithTitle("OK");
+		myPopup.runModal();
+	}
+	
+	func DialogOKCancel(question: String, text: String) -> Bool
+	{
+		let myPopup: NSAlert = NSAlert();
+		myPopup.messageText = question;
+		myPopup.informativeText = text;
+		myPopup.alertStyle = NSAlertStyle.WarningAlertStyle;
+		myPopup.addButtonWithTitle("OK");
+		myPopup.addButtonWithTitle("Cancel");
+		let res = myPopup.runModal();
+		if res == NSAlertFirstButtonReturn
+		{
+			return true;
+		}
+		return false;
+	}
+	
 	//This should be called whenever the selected response to view has
 	//been changed. We will completely repopulate all of the pages in the
 	//ResponseTabView to display the CurrentResponse if it has been filled.
@@ -144,8 +170,8 @@ class MainViewController: NSViewController
 			
 			ResponseCodeTextField.stringValue = "";
 			TranslationTextField.stringValue = "";
-			HResultTextField.stringValue = "";
-			ContentTypeTextField.stringValue = "No Response Selected";
+			EncodingTextField.stringValue = "";
+			MIMETypeTextField.stringValue = "No Response Selected";
 			
 		}
 		else
@@ -176,12 +202,20 @@ class MainViewController: NSViewController
 				}
 			}
 			
-			ResultImageView.image = NSImage(named: "corruptImage");
+			let image = NSImage(data: CurrentResponse!.ContentData);
+			if (image != nil)
+			{
+				ResultImageView.image = image;
+			}
+			else
+			{
+				ResultImageView.image = NSImage(named: "corruptImage");
+			}
 			
-			ResponseCodeTextField.stringValue = "200";
-			TranslationTextField.stringValue = "OK";
-			HResultTextField.stringValue = "No Errors";
-			ContentTypeTextField.stringValue = "application/html";
+			ResponseCodeTextField.stringValue = String(CurrentResponse!.StatusCode);
+			TranslationTextField.stringValue = CurrentResponse!.StatusCodeString;
+			EncodingTextField.stringValue = CurrentResponse!.TextEncoding ?? "";
+			MIMETypeTextField.stringValue = CurrentResponse!.MIMEType;
 		}
 	}
 	
@@ -283,6 +317,38 @@ class MainViewController: NSViewController
 		FilesTableView.reloadData();
 	}
 	
+	func LoadSelectedPastResponse()
+	{
+		if (PastRequestTableView.selectedRowIndexes.count > 1 ||
+			PastRequestTableView.selectedRowIndexes.count <= 0) { return; }
+		
+		let loadingResponse = PastResponses[PastRequestTableView.selectedRow];
+		
+		self.UrlTextField.stringValue = loadingResponse.Request.Url;
+		
+		self.MethodPopup.selectItemWithTitle(loadingResponse.Request.Method);
+		
+		self.Headers = [:];
+		for (key,value) in loadingResponse.Request.Headers
+		{
+			self.Headers[key] = value;
+		}
+		self.Content = [:];
+		for (key,value) in loadingResponse.Request.Content
+		{
+			self.Content[key] = value;
+		}
+		self.Files = [];
+		for value in loadingResponse.Request.Files
+		{
+			self.Files.append(value);
+		}
+		
+		ContentTableView.reloadData();
+		HeaderTableView.reloadData();
+		FilesTableView.reloadData();
+	}
+	
 	func HandleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Void
 	{
 		if (data != nil)
@@ -293,12 +359,14 @@ class MainViewController: NSViewController
 				
 				let newResponse = HttpResponse(
 					request: self.SubmittedRequest!,
-					content: String(data: data!, encoding: NSUTF8StringEncoding)!);
-				self.SubmittedRequest = nil;
+					content: data!,
+					response: response);
 				
 				PastResponses.insert(newResponse, atIndex: 0);
 				
-				NSLog("There are now \(PastResponses.count) past responses.");
+				self.SubmittedRequest = nil;
+				
+				if (Constants.VERBOSE) { NSLog("There are now \(PastResponses.count) past responses."); }
 				
 				PastRequestTableView.reloadData();
 				PastRequestTableView.selectRowIndexes(NSIndexSet(index: 0), byExtendingSelection: false);
@@ -315,6 +383,27 @@ class MainViewController: NSViewController
 		{
 			NSLog("NSData in response was empty");
 		}
+		
+		if (error != nil)
+		{
+			NSLog("We got an NSError object");
+			NSLog("Code: [\(error!.code)]");
+			
+			var subText = "Error code is \(error!.code).";
+			if (error!.code == -1017)
+			{
+				subText = "You cannot send content items on a \"GET\" request.";
+			}
+			if (error!.code <= -1000 && error!.code >= -1004)
+			{
+				subText = "Check that your Url is correct. Error code: [\(error!.code)]";
+			}
+			
+			DialogOK("We had an error while trying to send the request.", text: subText);
+			
+		}
+		
+		SubmitRequestButton.enabled = true;
 	}
 	
 	func JSONStringify(value: String) -> String
@@ -345,10 +434,13 @@ class MainViewController: NSViewController
 		if (url == "")
 		{
 			if (Constants.DEBUG) { NSLog("UrlTextField was empty"); }
+			
+			DialogOK("Url text field is empty.", text: "You must specify a Url for the request.");
+			
 			UrlTextField.becomeFirstResponder();
 			return;
 		}
-		let request = HttpRequest(url: url, method: "POST");
+		let request = HttpRequest(url: url, method: MethodPopup.selectedItem!.title);
 		for (key,value) in Headers
 		{
 			request.Headers[key] = value;
@@ -358,6 +450,7 @@ class MainViewController: NSViewController
 			request.Content[key] = value;
 		}
 		
+		SubmitRequestButton.enabled = false;
 		self.SubmittedRequest = request;
 		
 		request.DoRequest(OurSession!, completionHandler: self.HandleResponse);
@@ -396,6 +489,11 @@ class MainViewController: NSViewController
 	@IBAction func FileRemoveButtonPressed(sender: AnyObject)
 	{
 		RemoveSelectedFile();
+	}
+	
+	@IBAction func LoadRequestButtonPressed(sender: AnyObject)
+	{
+		LoadSelectedPastResponse();
 	}
 	
 	@IBAction func FormatJSONButtonPressed(sender: AnyObject)
@@ -721,10 +819,11 @@ extension MainViewController: NSTableViewDelegate
 		{
 			if (indexes.count == 1)
 			{
-				LoadRequestButton.enabled = true;
 				if (indexes.firstIndex < self.PastResponses.count && indexes.firstIndex >= 0)
 				{
+					LoadRequestButton.enabled = true;
 					self.CurrentResponse = self.PastResponses[indexes.firstIndex];
+					self.RefreshResponseViews();
 				}
 				else
 				{
@@ -735,6 +834,8 @@ extension MainViewController: NSTableViewDelegate
 			}
 			else
 			{
+				self.CurrentResponse = nil;
+				self.RefreshResponseViews();
 				LoadRequestButton.enabled = false;
 			}
 			self.RefreshResponseViews();

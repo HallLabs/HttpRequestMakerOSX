@@ -381,6 +381,9 @@
                                     <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
+                                <connections>
+                                    <action selector="LoadRequestButtonPressed:" target="XfG-lQ-9wD" id="X4s-8a-8sM"/>
+                                </connections>
                             </button>
                             <button verticalHuggingPriority="750" id="oHJ-gR-Kxm">
                                 <rect key="frame" x="482" y="342" width="134" height="32"/>
@@ -537,7 +540,7 @@
                                                         <rect key="frame" x="1" y="1" width="548" height="216"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
-                                                            <textView importsGraphics="NO" findStyle="panel" continuousSpellChecking="YES" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" quoteSubstitution="YES" dashSubstitution="YES" spellingCorrection="YES" smartInsertDelete="YES" id="GnE-rp-gyH">
+                                                            <textView importsGraphics="NO" findStyle="panel" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" allowsNonContiguousLayout="YES" id="GnE-rp-gyH">
                                                                 <rect key="frame" x="0.0" y="0.0" width="548" height="216"/>
                                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -656,7 +659,7 @@
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField verticalHuggingPriority="750" id="UFf-0R-ecF">
-                                                    <rect key="frame" x="58" y="168" width="117" height="22"/>
+                                                    <rect key="frame" x="67" y="168" width="108" height="22"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" state="on" borderStyle="border" id="K0P-Qk-cJK">
                                                         <font key="font" metaFont="system"/>
@@ -694,16 +697,16 @@
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="8qh-tZ-Qwc">
                                                     <rect key="frame" x="181" y="172" width="87" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Content-Type" id="m5i-Y7-YCZ">
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="MIME-Type" id="m5i-Y7-YCZ">
                                                         <font key="font" metaFont="system"/>
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                     </textFieldCell>
                                                 </textField>
                                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="SJ4-ys-uSs">
-                                                    <rect key="frame" x="0.0" y="172" width="52" height="17"/>
+                                                    <rect key="frame" x="0.0" y="172" width="61" height="17"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="HResult" id="hk4-Tt-9Kf">
+                                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Encoding" id="hk4-Tt-9Kf">
                                                         <font key="font" metaFont="system"/>
                                                         <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -893,6 +896,7 @@
                         <outlet property="ContentTableView" destination="XfW-LA-v9k" id="pJ6-Bg-Hbj"/>
                         <outlet property="ContentTypeTextField" destination="qHl-Km-WtD" id="Oq6-uh-MNQ"/>
                         <outlet property="ContentValueTextField" destination="aIS-O4-raL" id="fiU-xd-5aK"/>
+                        <outlet property="EncodingTextField" destination="UFf-0R-ecF" id="K83-Vl-Djj"/>
                         <outlet property="FileAddButton" destination="1f2-Hz-E95" id="yxy-Dc-Adh"/>
                         <outlet property="FileRemoveButton" destination="HJO-ai-a3z" id="Hsc-KN-Y2D"/>
                         <outlet property="FilesTableView" destination="poj-lE-BxQ" id="JR7-4i-lfu"/>
@@ -906,6 +910,7 @@
                         <outlet property="JSONTextView" destination="UR6-nH-0vb" id="dCX-9j-o4c"/>
                         <outlet property="JSONValidLabel" destination="gnf-pd-a6v" id="IG2-pk-xTq"/>
                         <outlet property="LoadRequestButton" destination="nto-wD-sIt" id="Sti-kQ-5fF"/>
+                        <outlet property="MIMETypeTextField" destination="qHl-Km-WtD" id="GXx-P1-Shc"/>
                         <outlet property="MethodPopup" destination="Ua5-rw-aim" id="CPl-ND-zC5"/>
                         <outlet property="PastRequestTableView" destination="Qq2-pU-Q9r" id="G62-dc-Xez"/>
                         <outlet property="RawTextTextView" destination="GnE-rp-gyH" id="PvZ-9y-qIn"/>
