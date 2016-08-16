@@ -20,3 +20,4 @@ The OSX version is a recreation of the Windows version programmed in Swift 2 usi
 # Screenshots:
 ![Screenshot 1](http://admin.pinsimple.com/images/HttpRequestScreen1.png)
 ![Screenshot 2](http://admin.pinsimple.com/images/HttpRequestScreen2.png)
+![Screenshot 3](http://admin.pinsimple.com/images/HttpRequestScreen3.png)
