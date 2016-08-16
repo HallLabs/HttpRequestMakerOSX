@@ -70,9 +70,9 @@ class MainViewController: NSViewController
 		super.viewDidLoad();
 		NSLog("We hit viewDidLoad");
 		
-		Headers = ["header1":"value1"];
-		Content = ["username":"harry", "password":"potter"];
-		Files = ["/Users/hiddenbutler/Documents/somefile.png", "/Users/hiddenbutler/Images/picture.png"];
+		Headers = [:];
+		Content = [:];
+		Files = [];
 		PastResponses = [];
 		CurrentResponse = nil;
 		SubmittedRequest = nil;
